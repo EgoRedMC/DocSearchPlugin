@@ -1,17 +1,15 @@
 <idea-plugin>
   <id>com.your.company.unique.plugin.id</id>
-  <name>Plugin display name here</name>
+  <name>DocSearch</name>
   <version>1.0</version>
-  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+  <vendor email="egoredmc@gmail.com">EgoRedMC</vendor>
 
   <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <em>most HTML tags may be used</em>
+      Simple plugin for searching Java documentation
     ]]></description>
 
   <change-notes><![CDATA[
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>
+      Plugin was made
     ]]>
   </change-notes>
 
@@ -30,6 +28,11 @@
 
   <actions>
     <!-- Add your actions here -->
+      <action id="opendoc" class="OpenDocumentation" text="Open Java Documentation"
+              description="Opens Docmentation at docs.oracle.com">
+          <add-to-group group-id="EditSmartGroup" anchor="first"/>
+          <mouse-shortcut keymap="Ctrl+Shift+Button1 Click" keystroke="Open doc"/>
+      </action>
   </actions>
 
 </idea-plugin>
