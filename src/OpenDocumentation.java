@@ -5,6 +5,8 @@ import com.intellij.openapi.editor.Caret;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 
+import java.awt.Desktop;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
@@ -13,16 +15,78 @@ public class OpenDocumentation extends AnAction {
     private static ArrayList<String> simpleImports;
     private static ArrayList<String> multiImports;
 
+    /**
+     * main program logic
+     */
     @Override
     public void update(AnActionEvent e) {
         Editor editor = e.getRequiredData(CommonDataKeys.EDITOR);
         sortImports(readImports(editor.getDocument()));
         //
-//        for (Caret c : editor.getCaretModel().getAllCarets()) {
-//            c.selectWordAtCaret(false);
-//            makeMainStuff(c.getSelectedText());
-//            c.removeSelection();
-//        }
+        for (Caret c : editor.getCaretModel().getAllCarets()) {
+            c.selectWordAtCaret(false);
+            openPage(findClass(c.getSelectedText()));
+            c.removeSelection();
+        }
+    }
+
+    /**
+     * opens Class documentation in browser
+     * if Class == null does nothing
+     *
+     * @param c Class, which documentation should be opened
+     */
+    private void openPage(Class c) {
+        if (c == null) return;
+        String page = "https://docs.oracle.com/javase/7/docs/api/"
+                + c.getCanonicalName().replace('.', '/')
+                + ".html";
+        try {
+            Desktop.getDesktop().browse(new URI(page));
+        } catch (Exception ignored) {
+        }
+    }
+
+    /**
+     * searching class by its name and imports
+     *
+     * @param word class name
+     * @return Class, which exists in imported packages and has this name
+     * or null if class with this name does not exists
+     */
+    private Class findClass(String word) {
+        Class res = null;
+        for (String imp : simpleImports) {
+            if (contains(imp, word)) {
+                try {
+                    res = Class.forName(imp);
+                } catch (ClassNotFoundException ignored) {
+                }
+            }
+        }
+        if (res == null) {
+            for (String imp : multiImports) {
+                boolean correct = true;
+                try {
+                    res = Class.forName(imp.substring(0, imp.length() - 1) + word);
+                } catch (ClassNotFoundException e) {
+                    correct = false;
+                }
+                if (correct)
+                    break;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * tells if this import corresponds to that Class name
+     *
+     * @param imp  current import
+     * @param word Class name
+     */
+    private boolean contains(String imp, String word) {
+        return imp.substring(imp.length() - word.length()).equals(word);
     }
 
     /**
@@ -96,13 +160,9 @@ public class OpenDocumentation extends AnAction {
         return false;
     }
 
-    //main logic
-    private void makeMainStuff(String word) {
-
-    }
-
     //happens after action performing
     @Override
     public void actionPerformed(AnActionEvent e) {
     }
 }
+//TODO: если вызов выглядит как java.util.List прямо в строке
