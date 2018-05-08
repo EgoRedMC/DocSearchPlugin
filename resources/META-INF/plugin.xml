@@ -1,26 +1,18 @@
-<idea-plugin>
-  <id>com.your.company.unique.plugin.id</id>
+<idea-plugin url="https://github.com/EgoRedMC/DocSearchPlugin">
+  <id>DocSearch</id>
   <name>DocSearch</name>
   <version>1.0</version>
   <vendor email="egoredmc@gmail.com">EgoRedMC</vendor>
 
-  <description><![CDATA[
+  <description>
       Simple plugin for searching Java documentation
-    ]]></description>
+  </description>
 
-  <change-notes><![CDATA[
-      Plugin was made
-    ]]>
+  <change-notes>
+      Initial release of the plugin
   </change-notes>
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
   <idea-version since-build="173.0"/>
-
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-       on how to target different products -->
-  <!-- uncomment to enable plugin in all products
-  <depends>com.intellij.modules.lang</depends>
-  -->
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
