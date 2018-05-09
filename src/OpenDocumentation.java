@@ -63,6 +63,7 @@ public class OpenDocumentation extends AnAction {
             if (contains(imp, word)) {
                 try {
                     res = Class.forName(imp);
+                    break;
                 } catch (ClassNotFoundException ignored) {
                 }
             }
@@ -73,7 +74,6 @@ public class OpenDocumentation extends AnAction {
                     res = Class.forName(imp.substring(0, imp.length() - 1) + word);
                     break;
                 } catch (ClassNotFoundException ignored) {
-
                 }
             }
         }
