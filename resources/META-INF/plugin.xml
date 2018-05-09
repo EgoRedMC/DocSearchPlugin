@@ -20,7 +20,7 @@
 
   <actions>
     <!-- Add your actions here -->
-      <action id="opendoc" class="OpenDocumentation" text="Open Java Documentation"
+      <action id="opendoc" class="OpenDocumentation" text="Open Java Documentation for specified class"
               description="Opens documentation at docs.oracle.com">
           <add-to-group group-id="EditSmartGroup" anchor="first"/>
           <mouse-shortcut keymap="Ctrl+Shift+Button1 Click" keystroke="Open doc"/>
