@@ -86,7 +86,7 @@ public class OpenDocumentation extends AnAction {
      * @param word Class name
      */
     private boolean contains(String imp, String word) {
-        return imp.substring(imp.length() - word.length()).equals(word);
+        return imp.length() >= word.length() && imp.substring(imp.length() - word.length()).equals(word);
     }
 
     /**
