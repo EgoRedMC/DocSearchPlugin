@@ -7,8 +7,11 @@ import com.intellij.openapi.editor.Editor;
 
 import java.awt.Desktop;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+import java.io.IOException;
+
 
 public class OpenDocumentation extends AnAction {
 
@@ -43,7 +46,7 @@ public class OpenDocumentation extends AnAction {
                 + ".html";
         try {
             Desktop.getDesktop().browse(new URI(page));
-        } catch (Exception ignored) {
+        } catch (URISyntaxException | IOException ignored) {
         }
     }
 
@@ -66,14 +69,12 @@ public class OpenDocumentation extends AnAction {
         }
         if (res == null) {
             for (String imp : multiImports) {
-                boolean correct = true;
                 try {
                     res = Class.forName(imp.substring(0, imp.length() - 1) + word);
-                } catch (ClassNotFoundException e) {
-                    correct = false;
-                }
-                if (correct)
                     break;
+                } catch (ClassNotFoundException ignored) {
+
+                }
             }
         }
         return res;
@@ -86,7 +87,7 @@ public class OpenDocumentation extends AnAction {
      * @param word Class name
      */
     private boolean contains(String imp, String word) {
-        return imp.length() >= word.length() && imp.substring(imp.length() - word.length()).equals(word);
+        return imp.endsWith(word);
     }
 
     /**
@@ -98,7 +99,7 @@ public class OpenDocumentation extends AnAction {
         simpleImports = new ArrayList<>(imports.size() / 4);
         multiImports = new ArrayList<>(imports.size() / 4);
         for (String imp : imports) {
-            if (imp.charAt(imp.length() - 1) == '*')
+            if (imp.endsWith("*"))
                 multiImports.add(imp);
             else
                 simpleImports.add(imp);
@@ -127,8 +128,9 @@ public class OpenDocumentation extends AnAction {
             char[] word = new char[line.length() - "import ".length()];
             int index = 0;
 
-            for (int i = "import ".length() + skipWhitespaces(line); i < line.length(); i++) {
-                if (line.charAt(i) == ' ') continue;
+            for (int i = "import ".length() + startingWhitespacesCount(line); i < line.length(); i++) {
+                if (Character.isWhitespace(line.charAt(i)))
+                    continue;
                 word[index++] = line.charAt(i);
             }
             imports.add(new String(word, 0, index));
@@ -139,11 +141,11 @@ public class OpenDocumentation extends AnAction {
     /**
      * @return number of whitespaces at the beginning of input String
      */
-    private int skipWhitespaces(String line) {
+    private int startingWhitespacesCount(String line) {
         for (int i = 0; i < line.length(); i++) {
             if (!Character.isWhitespace(line.charAt(i))) return i;
         }
-        return -1;
+        return 0;
     }
 
     /**
