@@ -1,7 +1,7 @@
 <idea-plugin url="https://github.com/EgoRedMC/DocSearchPlugin">
   <id>DocSearch</id>
   <name>DocSearch</name>
-  <version>1.0</version>
+  <version>1.01</version>
   <vendor email="egoredmc@gmail.com">EgoRedMC</vendor>
 
   <description>
@@ -9,7 +9,9 @@
   </description>
 
   <change-notes>
-      Initial release of the plugin
+      Fixed bug when class name was longer than one of imports.
+      Small optimization fix.
+      Main action name was changed for easier understanding.
   </change-notes>
 
   <idea-version since-build="173.0"/>
