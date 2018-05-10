@@ -23,7 +23,8 @@ public class OpenDocumentation extends AnAction {
      */
     @Override
     public void update(AnActionEvent e) {
-        Editor editor = e.getRequiredData(CommonDataKeys.EDITOR);
+        Editor editor = e.getData(CommonDataKeys.EDITOR);
+        if (editor == null) return;
         sortImports(readImports(editor.getDocument()));
         //
         for (Caret c : editor.getCaretModel().getAllCarets()) {
