@@ -149,7 +149,7 @@ public class OpenDocumentation extends AnAction {
 
     private boolean isComment(String line) {
         int a = startingWhitespacesCount(line);
-        return line.substring(a, a + 2).equals("//") || line.substring(a, a + 1).equals("*");
+        return line.substring(a, a + 2).equals("//") || line.substring(a, a + 2).equals("/*");
     }
 
     private int startingCommentLengthCount(String line) {
