@@ -147,11 +147,21 @@ public class OpenDocumentation extends AnAction {
         return imports;
     }
 
+    /**
+     * tells if line starts with comment
+     *
+     * @param line String to check
+     * @return true if after whitespaces String has "//" or "/*"
+     * false otherwise
+     */
     private boolean isComment(String line) {
         int a = startingWhitespacesCount(line);
         return line.substring(a, a + 2).equals("//") || line.substring(a, a + 2).equals("/*");
     }
 
+    /**
+     * @return number of symbols which are representing comment
+     */
     private int startingCommentLengthCount(String line) {
         for (int i = line.length() - 2; i >= 0; i--) {
             if (line.charAt(i) == '\n') return i;
