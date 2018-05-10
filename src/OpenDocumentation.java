@@ -120,23 +120,43 @@ public class OpenDocumentation extends AnAction {
         StringTokenizer tokenizer = new StringTokenizer(text, ";");
         while (tokenizer.hasMoreTokens()) {
             String line = tokenizer.nextToken();
-            if (!line.contains("import ")) {
+            if ((!line.contains("import ")) && (!line.contains("package"))) {
                 if (containsNonWhitespaces(line))
                     break;
                 else
                     continue;
             }
-            char[] word = new char[line.length() - "import ".length()];
+            char[] word = new char[line.length() - "import ".length() + 2];
             int index = 0;
-
-            for (int i = "import ".length() + startingWhitespacesCount(line); i < line.length(); i++) {
+            int start;
+            if (isComment(line))
+                start = startingCommentLengthCount(line);
+            else
+                start = startingWhitespacesCount(line);
+            for (int i = (line.contains("import") ? "import ".length() : "package ".length()) + start; i < line.length(); i++) {
                 if (Character.isWhitespace(line.charAt(i)))
                     continue;
                 word[index++] = line.charAt(i);
             }
+            if (line.contains("package")) {
+                word[index++] = '.';
+                word[index++] = '*';
+            }
             imports.add(new String(word, 0, index));
         }
         return imports;
+    }
+
+    private boolean isComment(String line) {
+        int a = startingWhitespacesCount(line);
+        return line.substring(a, a + 2).equals("//") || line.substring(a, a + 1).equals("*");
+    }
+
+    private int startingCommentLengthCount(String line) {
+        for (int i = line.length() - 2; i >= 0; i--) {
+            if (line.charAt(i) == '\n') return i;
+        }
+        return 0;
     }
 
     /**
