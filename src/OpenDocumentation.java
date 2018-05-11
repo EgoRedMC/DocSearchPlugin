@@ -42,6 +42,7 @@ public class OpenDocumentation extends AnAction {
      */
     private void openPage(Class c) {
         if (c == null) return;
+        if ((!c.getPackage().getName().contains("java."))&&(!c.getPackage().getName().contains("javax."))) return;
         String page = "https://docs.oracle.com/javase/7/docs/api/"
                 + c.getCanonicalName().replace('.', '/')
                 + ".html";
