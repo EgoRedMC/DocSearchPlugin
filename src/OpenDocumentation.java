@@ -1,8 +1,6 @@
-import com.intellij.codeInsight.hint.HintManager;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
-import com.intellij.notification.NotificationsManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -29,7 +27,8 @@ public class OpenDocumentation extends AnAction {
     @Override
     public void update(AnActionEvent e) {
         Editor editor = e.getData(CommonDataKeys.EDITOR);
-        if (editor == null) return;
+        if (editor == null)
+            return;
         sortImports(readImports(editor.getDocument()));
         //
         for (Caret c : editor.getCaretModel().getAllCarets()) {
@@ -37,7 +36,6 @@ public class OpenDocumentation extends AnAction {
             openPage(findClass(c.getSelectedText()));
             c.removeSelection();
         }
-//        Notifications.Bus.notify(new Notification("groundDisplayId", "title", "context", NotificationType.ERROR));
     }
 
     /**
@@ -59,9 +57,8 @@ public class OpenDocumentation extends AnAction {
                             "No supported documentation for this class found", NotificationType.WARNING));
             return;
         }
-        String page = "https://docs.oracle.com/javase/7/docs/api/"
-                + c.getCanonicalName().replace('.', '/')
-                + ".html";
+        String page = "https://docs.oracle.com/javase/7/docs/api/" +
+                c.getCanonicalName().replace('.', '/') + ".html";
         try {
             Desktop.getDesktop().browse(new URI(page));
         } catch (URISyntaxException | IOException ignored) {
@@ -70,7 +67,7 @@ public class OpenDocumentation extends AnAction {
 
     @SuppressWarnings("PointlessBooleanExpression")
     private boolean isNotGoodClass(Class c) {
-        return ((!c.getPackage().getName().contains("java.")) && (!c.getPackage().getName().contains("javax.")) ||
+        return ((!c.getPackage().getName().contains("java.") && !c.getPackage().getName().contains("javax.")) ||
                 false);//place for increasing available documentation
     }
 
@@ -143,31 +140,36 @@ public class OpenDocumentation extends AnAction {
         StringTokenizer tokenizer = new StringTokenizer(text, ";");
         while (tokenizer.hasMoreTokens()) {
             String line = tokenizer.nextToken();
-            if ((!line.contains("import ")) && (!line.contains("package"))) {
+            if (!line.contains("import ") && !line.contains("package")) {
                 if (containsNonWhitespaces(line))
                     break;
                 else
                     continue;
             }
-            char[] word = new char[line.length() - "import ".length() + 2];
-            int index = 0;
-            int start;
-            if (isComment(line))
-                start = startingCommentLengthCount(line);
-            else
-                start = startingWhitespacesCount(line);
-            for (int i = (line.contains("import") ? "import ".length() : "package ".length()) + start; i < line.length(); i++) {
-                if (Character.isWhitespace(line.charAt(i)))
-                    continue;
-                word[index++] = line.charAt(i);
-            }
-            if (line.contains("package")) {
-                word[index++] = '.';
-                word[index++] = '*';
-            }
-            imports.add(new String(word, 0, index));
+            imports.add(removeWhitespaces(line));
         }
         return imports;
+    }
+
+    private String removeWhitespaces(String line) {
+        char[] word = new char[line.length() - "import ".length() + 2];
+        int index = 0;
+        int start;
+        if (isComment(line))
+            start = startingCommentLengthCount(line);
+        else
+            start = startingWhitespacesCount(line);
+        start += (line.contains("import") ? "import ".length() : "package ".length());
+        for (int i = start; i < line.length(); i++) {
+            if (Character.isWhitespace(line.charAt(i)))
+                continue;
+            word[index++] = line.charAt(i);
+        }
+        if (line.contains("package")) {
+            word[index++] = '.';
+            word[index++] = '*';
+        }
+        return new String(word, 0, index);
     }
 
     /**
@@ -178,8 +180,7 @@ public class OpenDocumentation extends AnAction {
      * false otherwise
      */
     private boolean isComment(String line) {
-        int a = startingWhitespacesCount(line);
-        return line.substring(a, a + 2).equals("//") || line.substring(a, a + 2).equals("/*");
+        return line.trim().startsWith("//") || line.trim().startsWith("/*");
     }
 
     /**
@@ -187,7 +188,8 @@ public class OpenDocumentation extends AnAction {
      */
     private int startingCommentLengthCount(String line) {
         for (int i = line.length() - 2; i >= 0; i--) {
-            if (line.charAt(i) == '\n') return i;
+            if (line.charAt(i) == '\n')
+                return i;
         }
         return 0;
     }
@@ -197,7 +199,8 @@ public class OpenDocumentation extends AnAction {
      */
     private int startingWhitespacesCount(String line) {
         for (int i = 0; i < line.length(); i++) {
-            if (!Character.isWhitespace(line.charAt(i))) return i;
+            if (!Character.isWhitespace(line.charAt(i)))
+                return i;
         }
         return 0;
     }
@@ -211,7 +214,8 @@ public class OpenDocumentation extends AnAction {
      */
     private boolean containsNonWhitespaces(String line) {
         for (int i = 0; i < line.length(); i++) {
-            if (!Character.isWhitespace(line.charAt(i))) return true;
+            if (!Character.isWhitespace(line.charAt(i)))
+                return true;
         }
         return false;
     }
