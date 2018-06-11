@@ -1,7 +1,7 @@
 <idea-plugin url="https://github.com/EgoRedMC/DocSearchPlugin">
   <id>DocSearch</id>
   <name>DocSearch</name>
-  <version>1.1</version>
+  <version>1.11</version>
   <vendor email="egoredmc@gmail.com">EgoRedMC</vendor>
 
   <description>
@@ -9,10 +9,7 @@
   </description>
 
   <change-notes>
-      Fixed bug if editor is not opened.
-      Fixed bug if file starts with comment.
-      Added package checking for searching classes.
-      Added checking for "default library" membership.
+      Added notifications in case if class does not exist or is not supported.
   </change-notes>
 
   <idea-version since-build="173.0"/>

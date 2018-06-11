@@ -1,3 +1,8 @@
+import com.intellij.codeInsight.hint.HintManager;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
+import com.intellij.notification.NotificationsManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -32,6 +37,7 @@ public class OpenDocumentation extends AnAction {
             openPage(findClass(c.getSelectedText()));
             c.removeSelection();
         }
+//        Notifications.Bus.notify(new Notification("groundDisplayId", "title", "context", NotificationType.ERROR));
     }
 
     /**
@@ -41,8 +47,18 @@ public class OpenDocumentation extends AnAction {
      * @param c Class, which documentation should be opened
      */
     private void openPage(Class c) {
-        if (c == null) return;
-        if ((!c.getPackage().getName().contains("java."))&&(!c.getPackage().getName().contains("javax."))) return;
+        if (c == null) {
+            Notifications.Bus.notify(
+                    new Notification("", "DocSearchPlugin warning",
+                            "No such class found", NotificationType.WARNING));
+            return;
+        }
+        if (isNotGoodClass(c)) {
+            Notifications.Bus.notify(
+                    new Notification("", "DocSearchPlugin warning",
+                            "No supported documentation for this class found", NotificationType.WARNING));
+            return;
+        }
         String page = "https://docs.oracle.com/javase/7/docs/api/"
                 + c.getCanonicalName().replace('.', '/')
                 + ".html";
@@ -50,6 +66,12 @@ public class OpenDocumentation extends AnAction {
             Desktop.getDesktop().browse(new URI(page));
         } catch (URISyntaxException | IOException ignored) {
         }
+    }
+
+    @SuppressWarnings("PointlessBooleanExpression")
+    private boolean isNotGoodClass(Class c) {
+        return ((!c.getPackage().getName().contains("java.")) && (!c.getPackage().getName().contains("javax.")) ||
+                false);//place for increasing available documentation
     }
 
     /**
