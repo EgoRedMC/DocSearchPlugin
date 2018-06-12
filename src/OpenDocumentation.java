@@ -32,10 +32,52 @@ public class OpenDocumentation extends AnAction {
         sortImports(readImports(editor.getDocument()));
         //
         for (Caret c : editor.getCaretModel().getAllCarets()) {
-            c.selectWordAtCaret(false);
+            makeSelection(c);
             openPage(findClass(c.getSelectedText()));
             c.removeSelection();
         }
+    }
+
+    private void makeSelection(Caret caret) {
+        caret.selectWordAtCaret(false);
+        caret.setSelection(
+                getStartOffset(caret.getEditor().getDocument().getText(), caret.getSelectionStart()),
+                caret.getSelectionEnd());
+    }
+
+    private int getStartOffset(String text, int start) {
+        int begin = start - 1, res = start;
+        boolean lastIsLetter = true;
+        //
+        try {
+            while (true) {
+                while (Character.isWhitespace(text.charAt(begin)))
+                    begin--;
+                if (lastIsLetter) {
+                    if (text.charAt(begin) == '.')
+                        lastIsLetter = false;
+                    else
+                        break;
+                    begin--;
+                } else {
+                    if (Character.isLetterOrDigit(text.charAt(begin))) {
+                        begin = skipWord(text, begin);
+                        res = begin;
+                        lastIsLetter = true;
+                    } else break;
+                }
+            }
+        } catch (IndexOutOfBoundsException ignored) {
+            return 0;
+        }
+        //
+        return res;
+    }
+
+    private int skipWord(String text, int begin) {
+        while (Character.isLetterOrDigit(text.charAt(begin)))
+            begin--;
+        return begin;
     }
 
     /**
@@ -80,6 +122,14 @@ public class OpenDocumentation extends AnAction {
      */
     private Class findClass(String word) {
         Class res = null;
+        if (word.contains(".")) {
+            try {
+                return Class.forName(removeWhitespaces(word, true));
+            } catch (ClassNotFoundException ignored) {
+                return null;
+            }
+        }
+        //
         for (String imp : simpleImports) {
             if (contains(imp, word)) {
                 try {
@@ -99,6 +149,16 @@ public class OpenDocumentation extends AnAction {
             }
         }
         return res;
+    }
+
+    private String removeWhitespaces(String word, boolean b) {
+        word = word.substring(1);
+        StringBuilder sb = new StringBuilder(word.length());
+        for (char c : word.toCharArray())
+            if (!Character.isWhitespace(c)) {
+                sb.append(c);
+            }
+        return sb.toString();
     }
 
     /**
@@ -225,4 +285,3 @@ public class OpenDocumentation extends AnAction {
     public void actionPerformed(AnActionEvent e) {
     }
 }
-//TODO: если вызов выглядит как java.util.List прямо в строке
