@@ -10,6 +10,7 @@
 
   <change-notes>
       Added notifications in case if class does not exist or is not supported.
+      Added support of class with in-code full classname
   </change-notes>
 
   <idea-version since-build="173.0"/>
