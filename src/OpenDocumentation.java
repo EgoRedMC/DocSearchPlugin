@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.io.IOException;
 
-
 public class OpenDocumentation extends AnAction {
 
     private static ArrayList<String> simpleImports;
@@ -38,6 +37,10 @@ public class OpenDocumentation extends AnAction {
         }
     }
 
+    /**
+     * selects word/classname where caret is at the moment
+     * !! WARNING: if selecting full classname, it also selects one more character from the left
+     */
     private void makeSelection(Caret caret) {
         caret.selectWordAtCaret(false);
         caret.setSelection(
@@ -107,6 +110,9 @@ public class OpenDocumentation extends AnAction {
         }
     }
 
+    /**
+     * tells if class is supported
+     */
     @SuppressWarnings("PointlessBooleanExpression")
     private boolean isNotGoodClass(Class c) {
         return ((!c.getPackage().getName().contains("java.") && !c.getPackage().getName().contains("javax.")) ||
@@ -124,14 +130,14 @@ public class OpenDocumentation extends AnAction {
         Class res = null;
         if (word.contains(".")) {
             try {
-                return Class.forName(removeWhitespaces(word, true));
+                return Class.forName(removeWhitespacesInClassname(word));
             } catch (ClassNotFoundException ignored) {
                 return null;
             }
         }
         //
         for (String imp : simpleImports) {
-            if (contains(imp, word)) {
+            if (imp.endsWith(word)) {
                 try {
                     res = Class.forName(imp);
                     break;
@@ -151,7 +157,14 @@ public class OpenDocumentation extends AnAction {
         return res;
     }
 
-    private String removeWhitespaces(String word, boolean b) {
+    /**
+     * removes all whitespaces in classname
+     * !! WARNING: also deletes first character (fix for makeSelection() function)
+     *
+     * @param word classname with whitespaces
+     * @return classname without whitespaces
+     */
+    private String removeWhitespacesInClassname(String word) {
         word = word.substring(1);
         StringBuilder sb = new StringBuilder(word.length());
         for (char c : word.toCharArray())
@@ -159,16 +172,6 @@ public class OpenDocumentation extends AnAction {
                 sb.append(c);
             }
         return sb.toString();
-    }
-
-    /**
-     * tells if this import corresponds to that Class name
-     *
-     * @param imp  current import
-     * @param word Class name
-     */
-    private boolean contains(String imp, String word) {
-        return imp.endsWith(word);
     }
 
     /**
@@ -206,12 +209,19 @@ public class OpenDocumentation extends AnAction {
                 else
                     continue;
             }
-            imports.add(removeWhitespaces(line));
+            imports.add(removeWhitespacesInImport(line));
         }
         return imports;
     }
 
-    private String removeWhitespaces(String line) {
+    /**
+     * put import into right condition
+     * Example: "import java.util.       List" -> "java.util.List"
+     *
+     * @param line line, which contains import
+     * @return ready import
+     */
+    private String removeWhitespacesInImport(String line) {
         char[] word = new char[line.length() - "import ".length() + 2];
         int index = 0;
         int start;
