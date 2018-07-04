@@ -1,7 +1,7 @@
 <idea-plugin url="https://github.com/EgoRedMC/DocSearchPlugin">
   <id>DocSearch</id>
   <name>DocSearch</name>
-  <version>1.11</version>
+  <version>1.12</version>
   <vendor email="egoredmc@gmail.com">EgoRedMC</vendor>
 
   <description>
