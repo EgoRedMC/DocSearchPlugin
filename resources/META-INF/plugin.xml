@@ -9,8 +9,9 @@
   </description>
 
   <change-notes>
-      Added notifications in case if class does not exist or is not supported.
-      Added support of class with in-code full classname
+      Added off topic actions:
+      Wrapping with System.out.println()
+      Wrapping with Integer.parseInt()
   </change-notes>
 
   <idea-version since-build="173.0"/>
@@ -28,6 +29,14 @@
       </action>
       <action id="openallclasses" class="OpenAllClasses" text="Open Documentation&#39;s &quot;All Classes&quot; page"
               description="Open documentation&#39;s page with all default classes">
+          <add-to-group group-id="EditSmartGroup" anchor="first"/>
+      </action>
+      <action id="sout" class="Sout" text="Wrap line with sout"
+              description="Wraps line with System.out.println()">
+          <add-to-group group-id="EditSmartGroup" anchor="first"/>
+      </action>
+      <action id="parseInt" class="ParseInt" text="Wrap selected text with parseInt"
+              description="Wraps selected text with Integer.parseInt()">
           <add-to-group group-id="EditSmartGroup" anchor="first"/>
       </action>
   </actions>
