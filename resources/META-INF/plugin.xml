@@ -1,11 +1,12 @@
 <idea-plugin url="https://github.com/EgoRedMC/DocSearchPlugin">
   <id>DocSearch</id>
   <name>DocSearch</name>
-  <version>1.12</version>
+  <version>1.13</version>
   <vendor email="egoredmc@gmail.com">EgoRedMC</vendor>
 
   <description>
       Simple plugin for searching Java documentation
+      Also adds some usefull hotkeys
   </description>
 
   <change-notes>
@@ -21,23 +22,17 @@
   </extensions>
 
   <actions>
-    <!-- Add your actions here -->
       <action id="opendoc" class="OpenDocumentation" text="Open Java Documentation for specified class"
               description="Opens documentation at docs.oracle.com">
-          <add-to-group group-id="EditSmartGroup" anchor="first"/>
-          <mouse-shortcut keymap="Ctrl+Shift+Button1 Click" keystroke="Open doc"/>
       </action>
       <action id="openallclasses" class="OpenAllClasses" text="Open Documentation&#39;s &quot;All Classes&quot; page"
               description="Open documentation&#39;s page with all default classes">
-          <add-to-group group-id="EditSmartGroup" anchor="first"/>
       </action>
       <action id="sout" class="Sout" text="Wrap line with sout"
               description="Wraps line with System.out.println()">
-          <add-to-group group-id="EditSmartGroup" anchor="first"/>
       </action>
       <action id="parseInt" class="ParseInt" text="Wrap selected text with parseInt"
               description="Wraps selected text with Integer.parseInt()">
-          <add-to-group group-id="EditSmartGroup" anchor="first"/>
       </action>
   </actions>
 
